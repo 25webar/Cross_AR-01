@@ -1,0 +1,122 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="importmap">
+    {
+      "imports": {
+        "three"             : "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/"     : "https://unpkg.com/three@0.160.0/examples/jsm/",
+        "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
+      }
+    }
+    </script>
+    <script type="module">
+      import * as THREE from 'three';
+      import { MindARThree } from 'mindar-image-three';
+      import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+      
+      const mindarThree = new MindARThree({
+        container: document.querySelector("#container"),
+        imageTargetSrc: "./assets/card3.mind"
+      });
+      
+      const { renderer, scene, camera } = mindarThree;
+      const anchor = mindarThree.addAnchor(0);
+
+      // Add Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 3); // Soft light
+      scene.add(ambientLight);
+      
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+      directionalLight.position.set(0, -20, 0);
+      directionalLight.rotation.set(50, 0, 0);
+      scene.add(directionalLight);
+
+      const ambientLight1 = new THREE.AmbientLight(0xffffff, 3); // Soft light
+      scene.add(ambientLight1);
+      
+      const directionalLight1 = new THREE.DirectionalLight(0xffffff, 3);
+      directionalLight1.position.set(10, -20, 0);
+      directionalLight1.rotation.set(50, 20, 0);
+      scene.add(directionalLight1);
+      
+      // Load 3D model
+      const loader = new GLTFLoader();
+      loader.load("./assets/model1.glb", (gltf) =>
+      {
+        const model = gltf.scene;
+        model.scale.set(15, 15, 15); // Scale the model
+        model.position.set(0, 0, 0);
+        model.rotation.set(1.5,0,0);
+        anchor.group.add(model);
+      }
+      , undefined, (error) => 
+      {
+        console.error("Error loading model:", error);
+      });
+      const loader1 = new GLTFLoader();
+      loader1.load("./assets/model2.glb", (gltf) =>
+      {
+        const model1 = gltf.scene;
+        model1.scale.set(15, 15, 15); // Scale the model
+        model1.position.set(0, 0, 0);
+        model1.rotation.set(1.5,0,0);
+        anchor.group.add(model1);
+      }
+      , undefined, (error) => 
+      {
+        console.error("Error loading model:", error);
+      });
+      const loader2 = new GLTFLoader();
+      loader2.load("./assets/model3.glb", (gltf) =>
+      {
+        const model2 = gltf.scene;
+        model2.scale.set(15, 15, 15); // Scale the model
+        model2.position.set(0, 0, 0);
+        model2.rotation.set(1.5,0,0);
+        anchor.group.add(model2);
+      }
+      , undefined, (error) => 
+      {
+        console.error("Error loading model:", error);
+      });
+      
+      
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => {
+        renderer.render(scene, camera);
+        });
+      
+      
+        document.querySelector("#startButton").addEventListener("click", start);
+        document.querySelector("#stopButton").addEventListener("click", () => {
+        mindarThree.stop();
+        mindarThree.renderer.setAnimationLoop(null);
+      });
+    </script>
+    <style>
+      body {
+        margin: 0;
+      }
+      #container {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+      }
+      #control {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="control">
+      <button id="startButton">Start</button>
+      <button id="stopButton">Stop</button>
+    </div>
+    <div id="container"></div>
+  </body>
+</html>
